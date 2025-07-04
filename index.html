@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chuck Norris Jokes</title>
-    <!-- Incluye Vue.js desde CDN -->
+    <title>Chuck Norris Jokes - Cards</title>
+    <!-- Incluye Vue.js desde CDN (versión 2.x) -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- Incluye Bootstrap CSS desde CDN para el diseño de tarjetas y grid -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
-        /* Estilos para darle un "nice look" (aesthetic and minimalist) */
+        /* Estilos generales para el cuerpo y el contenedor principal */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f7f6;
@@ -24,7 +26,7 @@
             border-radius: 12px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
             padding: 30px;
-            max-width: 700px;
+            max-width: 1000px; /* Aumentado para acomodar 3 tarjetas */
             width: 100%;
             text-align: center;
         }
@@ -35,73 +37,117 @@
             border-bottom: 2px solid #eee;
             padding-bottom: 15px;
         }
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        /* Estilos específicos para las tarjetas Vue */
+        .chuck-card-container {
+            margin-bottom: 20px; /* Espacio entre filas de tarjetas */
         }
-        li {
-            background-color: #e9f5f5;
+        .chuck-card {
             border: 1px solid #d1e0e0;
             border-radius: 8px;
-            margin-bottom: 15px;
-            padding: 20px;
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #555;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            text-align: left; /* Alinea el texto de los chistes a la izquierda */
+            height: 100%; /* Asegura que todas las tarjetas tengan la misma altura en una fila */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Empuja el footer hacia abajo */
         }
-        li:last-child {
-            margin-bottom: 0;
-        }
-        li:hover {
+        .chuck-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
-        /* Estilo para el ícono de Chuck Norris (opcional, si quieres añadir uno) */
-        .chuck-icon {
-            font-size: 1.5em;
-            vertical-align: middle;
-            margin-right: 10px;
-            color: #cc0000; /* Color rojo para el ícono */
+        .card-img-top {
+            width: 80px; /* Tamaño fijo para la imagen */
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%; /* Hacer la imagen circular */
+            margin: 15px auto 10px auto; /* Centrar la imagen */
+            border: 3px solid #007bff; /* Borde alrededor de la imagen */
+        }
+        .card-body {
+            padding: 20px;
+            flex-grow: 1; /* Permite que el cuerpo de la tarjeta crezca */
+        }
+        .card-text {
+            font-size: 1.05em;
+            line-height: 1.5;
+            color: #555;
+        }
+        .card-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <h1><span class="chuck-icon">&#128170;</span> Chuck Norris Facts</h1>
-        <ul>
-            <li v-for="(joke, index) in chuckJokes" :key="index">
-                {{ joke.value }}
-            </li>
-        </ul>
+        <h1>Chuck Norris Facts</h1>
+
+        <div class="row">
+            <!-- Itera sobre los chistes y renderiza el componente chuck-card -->
+            <div class="col-12 col-md-6 col-lg-4 chuck-card-container" v-for="(joke, index) in chuckJokes" :key="index">
+                <chuck-card :icon-url="joke.icon_url" :joke-value="joke.value"></chuck-card>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Paso 1: Definir el componente Vue <chuck-card>
+        Vue.component('chuck-card', {
+            // Define las propiedades (props) que este componente recibirá de su padre
+            props: ['iconUrl', 'jokeValue'],
+            // El template del componente, usando clases de Bootstrap para la tarjeta
+            template: `
+                <div class="card chuck-card">
+                    <img :src="iconUrl" class="card-img-top" alt="Chuck Norris Icon">
+                    <div class="card-body">
+                        <p class="card-text">{{ jokeValue }}</p>
+                    </div>
+                    <div class="card-footer">
+                        Fact #{{ Math.floor(Math.random() * 1000) + 1 }}
+                    </div>
+                </div>
+            `
+        });
+
+        // Paso 2: Crear una nueva instancia de Vue
         new Vue({
             el: '#app', // Monta la instancia de Vue en el elemento con id="app"
             data: {
-                // Los datos de los chistes de Chuck Norris
+                // Los datos de los chistes de Chuck Norris con la nueva estructura
                 chuckJokes: [
                     {
+                        "icon_url": "https://assets.chucknorris.host/img/avatar/chuck-norris.png",
                         "value": "Chuck Norris can skydive into outer space."
                     },
                     {
+                        "icon_url": "https://assets.chucknorris.host/img/avatar/chuck-norris.png",
                         "value": "The chief export of Chuck Norris is pain."
                     },
                     {
+                        "icon_url": "https://assets.chucknorris.host/img/avatar/chuck-norris.png",
                         "value": "Chuck Norris doesn't read books. He stares them down until he gets the information he wants."
                     },
                     {
+                        "icon_url": "https://assets.chucknorris.host/img/avatar/chuck-norris.png",
                         "value": "Time waits for no man. Unless that man is Chuck Norris."
                     },
                     {
+                        "icon_url": "https://assets.chucknorris.host/img/avatar/chuck-norris.png",
                         "value": "If you spell Chuck Norris in Scrabble, you win. Forever."
+                    },
+                    // Puedes añadir un chiste extra para que se vean 3 en la primera línea y 2 en la segunda
+                    {
+                        "icon_url": "https://assets.chucknorris.host/img/avatar/chuck-norris.png",
+                        "value": "Chuck Norris counted to infinity. Twice."
                     },
                 ]
             }
         });
     </script>
+    <!-- Incluye Bootstrap JS Bundle (opcional para funcionalidades JS de Bootstrap, pero buena práctica) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
